@@ -3,18 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flipcard Kuis</title>
+    <title>FlipCard Kuis</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logo-ipiems.png" type="image/png">
+    
+    <style>
+        /* ================== CSS Mulai di Sini ================== */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --light-text-color: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            margin: 0;
+            overflow: hidden;
+        }
+
+        main {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* MODAL POPUP YANG TERPISAH */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--card-background);
+            color: var(--text-color);
+            padding: 40px;
+            padding-top: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            position: relative;
+            width: clamp(320px, 90vw, 500px);
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            text-align: center;
+            font-size: clamp(1rem, 2.5vmin, 1.2rem);
+            line-height: 1.7;
+        }
+        .modal-overlay:not(.hidden) .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 35px;
+            height: 35px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .modal-close-btn:hover {
+            transform: scale(1.1);
+            background-color: #d32f2f;
+        }
+
+        #setup-container {
+            text-align: center;
+            background: var(--card-background);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        #logo {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+
+        #setup-container h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        #card-count-input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 20px 10px 20px 0;
+            width: 70px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #start-btn, #restart-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--light-text-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        #start-btn:hover, #restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #start-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            box-sizing: border-box;
+            perspective: 1200px;
+        }
+
+        #card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 15px;
+            width: 100%;
+            height: 100%;
+            align-content: center;
+        }
+
+        .flip-card {
+            aspect-ratio: 5 / 7; 
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: dealIn 0.5s ease-out forwards;
+        }
+        .flip-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+        @keyframes dealIn { to { opacity: 1; transform: translateY(0); } }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px var(--shadow-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .flip-card-front {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            color: var(--light-text-color);
+            font-size: clamp(1.5rem, 10vmin, 3rem);
+            font-weight: 700;
+        }
+
+        .flip-card-back {
+            background-color: var(--card-background);
+            color: var(--text-color);
+            transform: rotateY(180deg);
+        }
+
+        #restart-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+            border-radius: 50%;
+            background-color: #f44336;
+            color: white;
+            z-index: 10;
+        }
+        #restart-btn:hover {
+            background-color: #d32f2f;
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+        /* ================== CSS Selesai di Sini ================== */
+    </style>
 </head>
 <body>
-
     <main>
         <div id="setup-container">
             <img src="logo-ipiems.png" alt="Logo Kuis" id="logo">
-            
             <h1>Flipcard Kuis</h1>
             <p>Masukkan jumlah kartu yang ingin ditampilkan:</p>
             <input type="number" id="card-count-input" min="1" value="5">
@@ -25,12 +290,153 @@
         </div>
 
         <div id="game-container" class="hidden">
-            <div id="card-container">
-                </div>
-            <button id="restart-btn">Mulai Ulang</button>
+            <div id="card-container"></div>
+            <button id="restart-btn">X</button>
         </div>
     </main>
 
-    <script src="script.js"></script>
+    <div id="question-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <p id="modal-question-text"></p>
+        </div>
+    </div>
+
+    <script>
+        // ================== JavaScript Mulai di Sini ==================
+        document.addEventListener('DOMContentLoaded', () => {
+            const googleSheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRF57Bc9TKitjZKJVwowhPtyHoHXvm77Qt-kKh2yXHoXH9wDaDkcYMlkx43vYm_8k9zefs9bu-iq-hr/pub?gid=0&single=true&output=csv';
+
+            const setupContainer = document.getElementById('setup-container');
+            const gameContainer = document.getElementById('game-container');
+            const cardContainer = document.getElementById('card-container');
+            const cardCountInput = document.getElementById('card-count-input');
+            const startBtn = document.getElementById('start-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const loader = document.querySelector('.loader');
+            const questionModal = document.getElementById('question-modal');
+            const modalQuestionText = document.getElementById('modal-question-text');
+            const modalCloseBtn = document.querySelector('.modal-close-btn');
+
+            let bankSoal = [];
+            let flippedCard = null;
+
+            function showLoading(isLoading) {
+                loader.classList.toggle('hidden', !isLoading);
+                startBtn.classList.toggle('hidden', isLoading);
+            }
+
+            async function fetchSoal() {
+                showLoading(true);
+                try {
+                    const response = await fetch(googleSheetURL);
+                    const data = await response.text();
+                    const rows = data.split('\n').slice(1);
+                    bankSoal = rows.map(row => ({ soal: row.trim() })).filter(item => item.soal);
+                } catch (error) {
+                    console.error('Gagal mengambil data dari Google Sheet:', error);
+                    alert('Gagal memuat soal. Periksa kembali URL dan koneksi internet.');
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            function showModal(question) {
+                modalQuestionText.textContent = question;
+                questionModal.classList.remove('hidden');
+            }
+
+            function closeModal() {
+                questionModal.classList.add('hidden');
+                if (flippedCard) {
+                    flippedCard.classList.remove('flipped');
+                    flippedCard = null;
+                }
+            }
+
+            function createCards(jumlah) {
+                cardContainer.innerHTML = '';
+                closeModal();
+
+                const soalDiacak = shuffleArray([...bankSoal]);
+                const soalTerpilih = soalDiacak.slice(0, jumlah);
+
+                soalTerpilih.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'flip-card';
+                    card.style.animationDelay = `${index * 0.07}s`;
+                    
+                    card.innerHTML = `
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">${index + 1}</div>
+                            <div class="flip-card-back"></div>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        if (card.classList.contains('flipped')) return;
+                        
+                        if (flippedCard) {
+                            flippedCard.classList.remove('flipped');
+                        }
+
+                        card.classList.add('flipped');
+                        flippedCard = card;
+                        
+                        setTimeout(() => {
+                           if (card.classList.contains('flipped')) {
+                                showModal(item.soal);
+                           }
+                        }, 300); // Tunda sedikit agar animasi flip terlihat
+                    });
+
+                    cardContainer.appendChild(card);
+                });
+            }
+
+            startBtn.addEventListener('click', () => {
+                const jumlahKartu = parseInt(cardCountInput.value);
+                if (bankSoal.length === 0) {
+                    alert('Soal belum termuat, mohon tunggu.');
+                    return;
+                }
+                if (isNaN(jumlahKartu) || jumlahKartu < 1) {
+                    alert('Masukkan jumlah kartu yang valid.');
+                    return;
+                }
+                if (jumlahKartu > bankSoal.length) {
+                    alert(`Jumlah soal yang tersedia hanya ${bankSoal.length}.`);
+                    return;
+                }
+                setupContainer.classList.add('hidden');
+                gameContainer.classList.remove('hidden');
+                createCards(jumlahKartu);
+            });
+
+            restartBtn.addEventListener('click', () => {
+                closeModal();
+                gameContainer.classList.add('hidden');
+                setupContainer.classList.remove('hidden');
+            });
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            questionModal.addEventListener('click', (event) => {
+                if (event.target === questionModal) {
+                    closeModal();
+                }
+            });
+
+            fetchSoal();
+        });
+        // ================== JavaScript Selesai di Sini ==================
+    </script>
 </body>
 </html>
