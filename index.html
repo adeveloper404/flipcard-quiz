@@ -10,271 +10,296 @@
     <link rel="icon" href="logo-ipiems.png" type="image/png">
     
     <style>
-        /* ================== CSS Mulai di Sini ================== */
-        :root {
-            --primary-color: #6a11cb;
-            --secondary-color: #2575fc;
-            --card-background: #ffffff;
-            --text-color: #333;
-            --light-text-color: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
+    /* ================== CSS Mulai di Sini ================== */
+    :root {
+        --primary-color: #6a11cb;
+        --secondary-color: #2575fc;
+        --card-background: #ffffff;
+        --text-color: #333;
+        --light-text-color: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-            margin: 0;
-            overflow: hidden;
-        }
+    /* PERBAIKAN: Menggunakan box-sizing universal untuk layout yang lebih mudah diprediksi */
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
 
-        main {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
+    body {
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        margin: 0;
+        overflow: hidden;
+        /* PERBAIKAN: Menghapus padding agar main bisa mengontrolnya */
+    }
 
-        /* MODAL POPUP YANG TERPISAH */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay:not(.hidden) {
-            opacity: 1;
-            pointer-events: auto;
-        }
+    main {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        padding: 15px; /* PERBAIKAN: Padding dipindahkan ke sini */
+    }
 
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+        padding: 15px; /* PERBAIKAN: Menambahkan padding agar modal tidak menempel di tepi layar kecil */
+    }
+    .modal-overlay:not(.hidden) {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-content {
+        background: var(--card-background);
+        color: var(--text-color);
+        padding: 40px;
+        padding-top: 50px;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        position: relative;
+        width: clamp(300px, 90vw, 500px); /* PERBAIKAN: Ukuran lebih fleksibel */
+        max-height: 90vh; /* PERBAIKAN: Memberi ruang lebih di layar kecil */
+        overflow-y: auto;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+        text-align: center;
+        font-size: clamp(0.9rem, 2.5vmin, 1.1rem); /* PERBAIKAN: Ukuran font disesuaikan */
+        line-height: 1.7;
+    }
+    .modal-overlay:not(.hidden) .modal-content {
+        transform: scale(1);
+    }
+
+    .modal-close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: 1;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+    .modal-close-btn:hover {
+        transform: scale(1.1);
+        background-color: #d32f2f;
+    }
+
+    #setup-container {
+        text-align: center;
+        background: var(--card-background);
+        padding: 40px 25px; /* PERBAIKAN: Padding horizontal lebih kecil untuk mobile */
+        border-radius: 20px;
+        box-shadow: 0 10px 30px var(--shadow-color);
+        width: clamp(300px, 90%, 500px); /* PERBAIKAN: Lebar kontainer dibuat fleksibel */
+    }
+
+    #logo {
+        max-width: 80px; /* PERBAIKAN: Logo sedikit lebih kecil */
+        margin-bottom: 15px;
+    }
+
+    #setup-container h1 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        font-weight: 700;
+        font-size: clamp(1.5rem, 5vw, 2rem); /* PERBAIKAN: Judul responsif */
+    }
+
+    #card-count-input {
+        padding: 10px;
+        font-size: 16px;
+        margin: 20px 10px 20px 0;
+        width: 70px;
+        border-radius: 10px;
+        border: 2px solid #ddd;
+        text-align: center;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    #start-btn, #restart-btn {
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--light-text-color);
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+    #start-btn:hover, #restart-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    #start-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        perspective: 1200px;
+        position: relative;
+    }
+
+    #card-container {
+        display: grid;
+        /* PERBAIKAN: Ukuran minimal kartu dibuat lebih kecil agar muat di layar mobile */
+        grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
+        gap: 10px; /* PERBAIKAN: Jarak antar kartu diperkecil */
+        width: 100%;
+        height: 100%;
+        align-content: center;
+        padding-bottom: 50px; /* PERBAIKAN: Memberi ruang agar tidak tertutup tombol X */
+    }
+
+    .flip-card {
+        aspect-ratio: 5 / 7; 
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: dealIn 0.5s ease-out forwards;
+    }
+    .flip-card:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 10px 20px var(--shadow-color);
+    }
+    @keyframes dealIn { to { opacity: 1; transform: translateY(0); } }
+
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 10px; /* PERBAIKAN: Border radius sedikit lebih kecil */
+        box-shadow: 0 4px 8px var(--shadow-color);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 5px; /* PERBAIKAN: Padding diperkecil */
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .flip-card-front {
+        background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+        color: var(--light-text-color);
+        font-size: clamp(1rem, 10vmin, 2.5rem);
+        font-weight: 700;
+    }
+
+    .flip-card-back {
+        background-color: var(--card-background);
+        color: var(--text-color);
+        transform: rotateY(180deg);
+    }
+
+    #restart-btn {
+        position: absolute;
+        top: 15px; /* PERBAIKAN: Posisi disesuaikan */
+        right: 15px;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1;
+        border-radius: 50%;
+        background-color: #f44336;
+        color: white;
+        z-index: 10;
+    }
+    #restart-btn:hover {
+        background-color: #d32f2f;
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    /* PERBAIKAN: Media Query untuk layar yang sangat kecil (ponsel landscape) */
+    @media (max-height: 450px) {
         .modal-content {
-            background: var(--card-background);
-            color: var(--text-color);
-            padding: 40px;
-            padding-top: 50px;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            position: relative;
-            width: clamp(320px, 90vw, 500px);
-            max-height: 80vh;
-            overflow-y: auto;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-            text-align: center;
-            font-size: clamp(1rem, 2.5vmin, 1.2rem);
-            line-height: 1.7;
+            padding: 20px;
+            padding-top: 40px;
         }
-        .modal-overlay:not(.hidden) .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 35px;
-            height: 35px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            line-height: 1;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s ease, background-color 0.2s ease;
-        }
-        .modal-close-btn:hover {
-            transform: scale(1.1);
-            background-color: #d32f2f;
-        }
-
         #setup-container {
-            text-align: center;
-            background: var(--card-background);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px var(--shadow-color);
+            padding: 20px;
         }
-
-        #logo {
-            max-width: 100px;
-            margin-bottom: 15px;
-        }
-
-        #setup-container h1 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        #card-count-input {
-            padding: 10px;
-            font-size: 16px;
-            margin: 20px 10px 20px 0;
-            width: 70px;
-            border-radius: 10px;
-            border: 2px solid #ddd;
-            text-align: center;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        #start-btn, #restart-btn {
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--light-text-color);
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-        #start-btn:hover, #restart-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        #start-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--primary-color);
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        #game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-            height: 100%;
-            padding: 15px;
-            box-sizing: border-box;
-            perspective: 1200px;
-        }
-
         #card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-            gap: 15px;
-            width: 100%;
-            height: 100%;
-            align-content: center;
+            gap: 8px;
+            grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
         }
-
-        .flip-card {
-            aspect-ratio: 5 / 7; 
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: dealIn 0.5s ease-out forwards;
-        }
-        .flip-card:hover {
-            transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 10px 20px var(--shadow-color);
-        }
-        @keyframes dealIn { to { opacity: 1; transform: translateY(0); } }
-
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-        }
-        .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px var(--shadow-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 10px;
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-
-        .flip-card-front {
-            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
-            color: var(--light-text-color);
-            font-size: clamp(1.5rem, 10vmin, 3rem);
-            font-weight: 700;
-        }
-
-        .flip-card-back {
-            background-color: var(--card-background);
-            color: var(--text-color);
-            transform: rotateY(180deg);
-        }
-
-        #restart-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            font-size: 1.5rem;
-            font-weight: bold;
-            line-height: 1;
-            border-radius: 50%;
-            background-color: #f44336;
-            color: white;
-            z-index: 10;
-        }
-        #restart-btn:hover {
-            background-color: #d32f2f;
-            transform: scale(1.1);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-        /* ================== CSS Selesai di Sini ================== */
-    </style>
+    }
+</style>
 </head>
 <body>
     <main>
