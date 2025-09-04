@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipcard Kuis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main>
+        <div id="setup-container">
+            <img src="logo-ipiems.png" alt="Logo Kuis" id="logo">
+            
+            <h1>Flipcard Kuis</h1>
+            <p>Masukkan jumlah kartu yang ingin ditampilkan:</p>
+            <input type="number" id="card-count-input" min="1" value="5">
+            <div id="start-controls">
+                <button id="start-btn">Mulai</button>
+                <div class="loader hidden"></div>
+            </div>
+        </div>
+
+        <div id="game-container" class="hidden">
+            <div id="card-container">
+                </div>
+            <button id="restart-btn">Mulai Ulang</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
