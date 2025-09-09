@@ -1,10 +1,10 @@
-# Flipcard Quiz
+# Web Up Tugas
 
-Sebuah aplikasi web sederhana berbasis flip-card untuk membuat kuis interaktif. Dibangun menggunakan HTML murni dengan desain yang ringan dan mudah dijalankan langsung di browser, tanpa perlu instalasi tambahan.
+Sebuah aplikasi web untuk pengumpulan tugas online yang terintegrasi dengan drive dan sheet. Dibangun menggunakan HTML murni dan Google Apps Script, menciptakan solusi serverless yang efisien tanpa memerlukan database atau backend tradisional
 
 🚀 Fitur Utama:
-1. Tampilan Flip-Card: Pertanyaan dan jawaban ditampilkan dengan efek kartu yang bisa dibalik.
-2. Antarmuka Sederhana: Mudah dipahami, cocok untuk latihan mandiri atau media pembelajaran.
-3. Portabel: Hanya membutuhkan file HTML
-4. Ringan & Cepat: Tidak memerlukan framework atau library eksternal.
-5. Bank Soal dari Spreadsheet
+1. Formulir Responsif: Tampilan modern yang menyesuaikan diri di desktop dan perangkat mobile.
+2. Integrasi Google Drive: File yang diunggah secara otomatis disimpan dan diorganisir ke dalam folder kelas di Google Drive.
+3. Pencatatan Google Sheets: Setiap pengiriman tugas tercatat rapi di Google Spreadsheet, lengkap dengan timestamp dan link file.
+4. Tanpa Login: Memudahkan siapa saja untuk mengirim file tanpa perlu masuk ke akun email.
+5. Serverless & Gratis: Berjalan sepenuhnya di ekosistem Google tanpa biaya hosting atau server.
